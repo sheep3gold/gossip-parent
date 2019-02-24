@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itcast.gossip.mapper.NewsMapper">
+    <select id="findByNextMaxIdToNews" parameterType="string" resultType="news">
+        SELECT * FROM news WHERE id > #{nextMaxId} LIMIT 0,100;
+    </select>
+
+    <select id="findByNextMaxIdToMaxId" parameterType="string" resultType="string">
+        SELECT max(id) FROM (SELECT * FROM news WHERE id > #{nextMaxId} LIMIT 0,100) temp;
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+
+    <context:property-placeholder location="classpath:init.properties"/>
+
+    <context:component-scan base-package="cn.itcast.kafka.listener"/>
+
+    <!--容器属性-->
+    <bean id="containerProperties" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg name="topics" value="${kafka-topic}"/>
+        <property name="messageListener" ref="spiderKafkaListener"/>
+    </bean>
+
+    <bean id="configs" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="bootstrap.servers" value="${kafka.servers}"/>
+                <entry key="group.id" value="0"/>
+                <entry key="enable.auto.commit" value="true"/>
+                <entry key="auto.commit.interval.ms" value="1000"/>
+                <entry key="session.timeout.ms" value="15000"/>
+                <entry key="key.deserializer" value="org.apache.kafka.common.serialization.StringDeserializer"/>
+                <entry key="value.deserializer" value="org.apache.kafka.common.serialization.StringDeserializer"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <!--消费者工厂-->
+    <bean id="consumerFactory" class="org.springframework.kafka.core.DefaultKafkaConsumerFactory">
+        <constructor-arg name="configs" ref="configs"/>
+    </bean>
+
+
+
+    <!--创建kafka消费数据的监听容器-->
+    <bean id="listenerContainer" class="org.springframework.kafka.listener.KafkaMessageListenerContainer">
+        <constructor-arg name="consumerFactory" ref="consumerFactory"/>
+        <constructor-arg name="containerProperties" ref="containerProperties"/>
+    </bean>
+
+
+</beans>

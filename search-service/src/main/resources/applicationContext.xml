@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc ">
+
+    <bean class="org.apache.solr.client.solrj.impl.CloudSolrServer">
+        <!--指定zookeeper的连接地址-->
+        <constructor-arg name="zkHost" value="192.168.78.141:2181,192.168.78.142:2181,192.168.78.143:2181"/>
+        <!--默认的索引库-->
+        <property name="defaultCollection" value="collection2"/>
+        <!--从zookeeper中获取的客户端的超时时间-->
+        <property name="zkClientTimeout" value="10000"/>
+        <!--设置 连接zookeeper的超时时间-->
+        <property name="zkConnectTimeout" value="10000"/>
+    </bean>
+
+    <!--dubbox的相关配置-->
+    <dubbo:protocol name="dubbo" port="20881"/>
+    <dubbo:application name="search-service"/>
+    <dubbo:registry protocol="zookeeper" address="192.168.78.141:2181,192.168.78.142:2181,192.168.78.143:2181"/>
+    <dubbo:annotation package="cn.itcast.search.service.impl"/>
+</beans>
